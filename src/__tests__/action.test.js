@@ -162,7 +162,7 @@ describe('action', () => {
             });
         });
 
-        it('works with assignees only, no random pick', async () => {
+        it('works with static assignees only', async () => {
             await runAction(octokitMock, ISSUE_CONTEXT_PAYLOAD, {
                 assignees: ['user1', 'user2']
             });
@@ -178,7 +178,7 @@ describe('action', () => {
             });
         });
 
-        it('works with teams only, no random pick', async () => {
+        it('works with static teams only', async () => {
             await runAction(octokitMock, ISSUE_CONTEXT_PAYLOAD, {
                 teams: ['teamA', 'teamB']
             });
@@ -193,7 +193,7 @@ describe('action', () => {
             });
         });
 
-        it('works with assignees and teams with duplicates, no random pick', async () => {
+        it('works with static assignees and teams with duplicates', async () => {
             await runAction(octokitMock, ISSUE_CONTEXT_PAYLOAD, {
                 assignees: ['user1', 'user2', 'userA2'],
                 teams: ['teamA', 'teamB']
@@ -207,7 +207,7 @@ describe('action', () => {
             });
         });
 
-        it('works with assignees, random pick', async () => {
+        it('works with random assignees', async () => {
             await runAction(octokitMock, ISSUE_CONTEXT_PAYLOAD, {
                 assignees: ['user1', 'user2', 'userA2'],
                 numOfAssignee: 2
@@ -218,7 +218,7 @@ describe('action', () => {
             ).toBe(2);
         });
 
-        it('works with teams, random pick', async () => {
+        it('works with teams, random assignee', async () => {
             await runAction(octokitMock, ISSUE_CONTEXT_PAYLOAD, {
                 teams: ['teamA', 'teamB'],
                 numOfAssignee: 2
@@ -328,6 +328,22 @@ describe('action', () => {
                 owner: 'mockOrg',
                 repo: 'mockRepo'
             });
+        });
+
+        it('works with random reviewers from teams', async () => {
+            await runAction(octokitMock, PR_CONTEXT_PAYLOAD, {
+                teams: ['teamA'],
+                numOfAssignee: 1
+            });
+
+            // Check that we only assign one users out of the team
+            expect(addPRReviewersMock).toHaveBeenCalledTimes(1);
+            const { reviewers } = addPRReviewersMock.mock.calls[0][0];
+            expect(reviewers.length).toBe(1);
+            const reviewer = reviewers[0];
+            expect(
+                TEAM_MEMBERS.teamA.data.some((user) => user.login === reviewer)
+            ).toBeTruthy();
         });
     });
 
