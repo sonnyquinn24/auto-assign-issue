@@ -89,9 +89,9 @@ Let's look at a practical example:
 assignees: octocat:4,cat
 ```
 
--   `octocat` has a weight of `4`.
--   `cat` has a weight of `1` (default value).
--   `octocat` has 4 chances out of 5 to be selected.
+- `octocat` has a weight of `4`.
+- `cat` has a weight of `1` (default value).
+- `octocat` has 4 chances out of 5 to be selected.
 
 ### Working with Project Cards
 
@@ -127,5 +127,5 @@ jobs:
 
 Instead of hardcoding the user name in the workflow, you can use a repository variable:
 
--   create a GitHub repo variable named `DEFAULT_ISSUE_ASSIGNEE` with the name of the user
--   use this value `${{ vars.DEFAULT_ISSUE_ASSIGNEE }}` instead of the username in the workflow.
+- create a GitHub repo variable named `DEFAULT_ISSUE_ASSIGNEE` with the name of the user
+- use this value `${{ vars.DEFAULT_ISSUE_ASSIGNEE }}` instead of the username in the workflow.
