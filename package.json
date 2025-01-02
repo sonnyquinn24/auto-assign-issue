@@ -1,6 +1,6 @@
 {
     "name": "auto-assign-issue",
-    "version": "2.0.1",
+    "version": "2.1.0",
     "private": true,
     "description": "GitHub action that auto-assigns issues to users",
     "main": "src/index.js",
@@ -10,7 +10,7 @@
         "prettier:verify": "prettier --check \"**/*.{html,js,json,md,yaml,yml}\"",
         "test": "jest",
         "test:coverage": "jest --coverage",
-        "postinstall": "husky",
+        "prepare": "husky || true",
         "precommit": "lint-staged"
     },
     "lint-staged": {

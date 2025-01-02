@@ -4,7 +4,8 @@ const {
     getTeamMembers,
     removeAssignees,
     isAnIssue,
-    removeAllReviewers
+    removeAllReviewers,
+    checkIfUsersCanBeAssigned
 } = require('./utils');
 
 /**
@@ -21,6 +22,7 @@ const {
  * @param {boolean} parameters.allowSelfAssign
  * @param {number} parameters.manualIssueNumber
  * @param {boolean} parameters.teamIsPullRequestReviewer
+ * @param {boolean} parameters.failsIfUsersCannotBeAssigned
  */
 const runAction = async (octokit, context, parameters) => {
     const {
@@ -32,7 +34,8 @@ const runAction = async (octokit, context, parameters) => {
         allowNoAssignees = false,
         allowSelfAssign = true,
         manualIssueNumber = 0,
-        teamIsPullRequestReviewer = false
+        teamIsPullRequestReviewer = false,
+        failsIfUsersCannotBeAssigned = false
     } = parameters;
 
     // Check assignees and teams parameters
@@ -125,6 +128,22 @@ const runAction = async (octokit, context, parameters) => {
                 isIssue ? 'issue' : 'PR'
             } ${issueNumber}: ${JSON.stringify(newAssignees)}`
         );
+        // Check if users can be assigned
+        if (failsIfUsersCannotBeAssigned) {
+            const checkResults = await checkIfUsersCanBeAssigned(
+                octokit,
+                owner,
+                repo,
+                issueNumber,
+                newAssignees
+            );
+            if (!checkResults.isSuccess) {
+                throw new Error(
+                    `The following users can't be assigned to issue ${issueNumber}: ${JSON.stringify(checkResults.assigneeErrors)}`
+                );
+            }
+        }
+        // Assign users
         await octokit.rest.issues.addAssignees({
             owner,
             repo,

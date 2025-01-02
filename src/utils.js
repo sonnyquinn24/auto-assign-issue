@@ -161,6 +161,41 @@ const removeAllReviewers = async (octokit, owner, repo, pull_number) => {
     }
 };
 
+const checkIfUsersCanBeAssigned = async (
+    octokit,
+    owner,
+    repo,
+    issue_number,
+    assignees
+) => {
+    const requests = [];
+    for (const assignee of assignees) {
+        const request = octokit.request(
+            `GET /repos/{owner}/{repo}/issues/{issue_number}/assignees/{assignee}`,
+            {
+                owner,
+                repo,
+                issue_number,
+                assignee,
+                headers: {
+                    'X-GitHub-Api-Version': '2022-11-28'
+                }
+            }
+        );
+        requests.push(request);
+    }
+    const responses = await Promise.all(requests);
+    const result = { isSuccess: true, assigneeErrors: [] };
+    for (let i = 0; i < assignees.length; i++) {
+        const { status } = responses[i];
+        if (status != 204) {
+            result.isSuccess = false;
+            result.assigneeErrors.push(assignees[i]);
+        }
+    }
+    return result;
+};
+
 module.exports = {
     parseAssignments,
     parseIntInput,
@@ -169,5 +204,6 @@ module.exports = {
     getTeamMembers,
     removeAssignees,
     isAnIssue,
-    removeAllReviewers
+    removeAllReviewers,
+    checkIfUsersCanBeAssigned
 };
