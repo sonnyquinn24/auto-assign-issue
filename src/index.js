@@ -60,6 +60,13 @@ try {
         }
     );
 
+    const failsIfUsersCannotBeAssigned = core.getBooleanInput(
+        'failsIfUsersCannotBeAssigned',
+        {
+            required: false
+        }
+    );
+
     // Get octokit
     const octokit = github.getOctokit(gitHubToken);
 
@@ -76,7 +83,8 @@ try {
         allowNoAssignees,
         allowSelfAssign,
         manualIssueNumber,
-        teamIsPullRequestReviewer
+        teamIsPullRequestReviewer,
+        failsIfUsersCannotBeAssigned
     });
 } catch (error) {
     core.setFailed(error.message);
