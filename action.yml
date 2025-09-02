@@ -37,7 +37,7 @@ inputs:
         required: false
         default: false
     failsIfUsersCannotBeAssigned:
-        description: 'Flag that causes the action to fail if one ore more users cannot be assigned to an issue. If not set the invalid users are simply ignored.'
+        description: 'Flag that causes the action to fail if one or more users cannot be assigned to an issue. If not set the invalid users are simply ignored.'
         required: false
         default: false
 
